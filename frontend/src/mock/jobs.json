@@ -1,0 +1,30 @@
+[
+	{
+		"prodOrderNo": "WON/2511",
+		"customerName": "Haier Appliances",
+		"sourceNo": "FG00105",
+		"sourceDescription": "Packing Box HFC500D",
+		"scheduleDate": "2025-11-10",
+		"quantityToSchedule": 1200,
+		"outputQuantity": 1246,
+		"linearLength": 2702.4,
+		"boardUps": 1,
+		"plannedDeckleSize": 1320,
+		"cutSize": 2252,
+		"status": "FPA Approved"
+	},
+	{
+		"prodOrderNo": "WON/2526",
+		"customerName": "Whirlpool",
+		"sourceNo": "FG00152",
+		"sourceDescription": "Carton Sleeve",
+		"scheduleDate": "2025-11-10",
+		"quantityToSchedule": 2000,
+		"outputQuantity": 2015,
+		"linearLength": 5420,
+		"boardUps": 1,
+		"plannedDeckleSize": 1960,
+		"cutSize": 2710,
+		"status": "Approved"
+	}
+]
