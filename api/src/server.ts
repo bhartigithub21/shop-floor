@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import { getCompanies } from "./config/client";
 import callAPI from "./config/basicAuth";
 dotenv.config();
+import authRoter from "./routes/auth";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -29,6 +30,8 @@ app.get("/test", (req: Request, res: Response) => {
       res.status(500).json({ error: error.message || "API call failed" }),
     );
 });
+
+app.use("/api/auth", authRoter);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
