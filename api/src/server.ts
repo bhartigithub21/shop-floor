@@ -4,11 +4,14 @@ import { getCompanies } from "./config/client";
 import callAPI from "./config/basicAuth";
 dotenv.config();
 import authRoter from "./routes/auth";
+import cors from "cors";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req: Request, res: Response) => {
   res.json({ message: "Hello from Express + TypeScript 🚀" });
