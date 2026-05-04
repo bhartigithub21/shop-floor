@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
+import "./Signup.css"
 
 const Signup = () => {
 	const navigate = useNavigate()
@@ -35,67 +36,90 @@ const Signup = () => {
 	}
 
 	return (
-		<div>
-			<h1>Operator Signup</h1>
-
-			<form onSubmit={handleSubmit}>
-				<div>
-					<label>Name</label>
-					<input
-						type='text'
-						name='name'
-						value={formData.name}
-						onChange={handleChange}
-					/>
+		<section className='signup-page'>
+			<div className='signup-card'>
+				<div className='signup-copy'>
+					<h1>Operator Signup</h1>
 				</div>
 
-				<div>
-					<label>Employee ID</label>
-					<input
-						type='text'
-						name='employeeId'
-						value={formData.employeeId}
-						onChange={handleChange}
-					/>
-				</div>
+				<form className='signup-form' onSubmit={handleSubmit}>
+					<div className='signup-grid'>
+						<div className='signup-field'>
+							<label htmlFor='name'>Name</label>
+							<input
+								id='name'
+								type='text'
+								name='name'
+								value={formData.name}
+								onChange={handleChange}
+								placeholder='Enter your full name'
+								autoComplete='name'
+							/>
+						</div>
 
-				<div>
-					<label>Email</label>
-					<input
-						type='email'
-						name='email'
-						value={formData.email}
-						onChange={handleChange}
-					/>
-				</div>
+						<div className='signup-field'>
+							<label htmlFor='employeeId'>Employee ID</label>
+							<input
+								id='employeeId'
+								type='text'
+								name='employeeId'
+								value={formData.employeeId}
+								onChange={handleChange}
+								placeholder='Enter your employee ID'
+								autoComplete='username'
+							/>
+						</div>
 
-				<div>
-					<label>Password</label>
-					<input
-						type='password'
-						name='password'
-						value={formData.password}
-						onChange={handleChange}
-					/>
-				</div>
+						<div className='signup-field signup-field--full'>
+							<label htmlFor='email'>Email</label>
+							<input
+								id='email'
+								type='email'
+								name='email'
+								value={formData.email}
+								onChange={handleChange}
+								placeholder='Enter your work email'
+								autoComplete='email'
+							/>
+						</div>
 
-				<div>
-					<label>Confirm Password</label>
-					<input
-						type='password'
-						name='confirmPassword'
-						value={formData.confirmPassword}
-						onChange={handleChange}
-					/>
-				</div>
+						<div className='signup-field'>
+							<label htmlFor='password'>Password</label>
+							<input
+								id='password'
+								type='password'
+								name='password'
+								value={formData.password}
+								onChange={handleChange}
+								placeholder='Create a password'
+								autoComplete='new-password'
+							/>
+						</div>
 
-				<button type='submit'>Signup</button>
-			</form>
+						<div className='signup-field'>
+							<label htmlFor='confirmPassword'>Confirm Password</label>
+							<input
+								id='confirmPassword'
+								type='password'
+								name='confirmPassword'
+								value={formData.confirmPassword}
+								onChange={handleChange}
+								placeholder='Re-enter your password'
+								autoComplete='new-password'
+							/>
+						</div>
+					</div>
 
-			<p>
-				Already have an account? <Link to='/'>Login</Link>
-			</p>
-		</div>
+					<button className='signup-button' type='submit'>
+						Create Account
+					</button>
+				</form>
+
+				<p className='signup-footer'>
+					Already have an account? <Link to='/'>Login</Link>
+				</p>
+			</div>
+		</section>
 	)
 }
 

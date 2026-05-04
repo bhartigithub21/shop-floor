@@ -2,29 +2,49 @@ function HeaderFilters({
 	searchText,
 	onSearchChange,
 	onRefresh,
-	Customers,
-	setCustomers,
+	selectedCustomer,
+	onCustomerChange,
+	customerOptions,
 }) {
 	return (
-		<div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-			<input
-				type='text'
-				placeholder='Search by order, customer, source'
-				value={searchText}
-				onChange={(e) => onSearchChange(e.target.value)}
-			/>
-			<select value={Customers} onChange={(e) => setCustomers(e.target.value)}>
-				<option>All Customers</option>
-				<option>Haier Appliances</option>
-				<option>Whirlpool</option>
-			</select>
-			<select>
-				<option>All Status</option>
-				<option>Approved</option>
-				<option>Pending</option>
-			</select>
-			<button onClick={onRefresh}>Refresh</button>
-		</div>
+		<section className='dashboard-filters'>
+			<div className='dashboard-filter-group dashboard-filter-group-wide'>
+				<label htmlFor='dashboard-search'>Quick Search</label>
+				<input
+					id='dashboard-search'
+					className='dashboard-filter-control'
+					type='text'
+					placeholder='Search by order, customer, source, or description'
+					value={searchText}
+					onChange={(e) => onSearchChange(e.target.value)}
+				/>
+			</div>
+
+			<div className='dashboard-filter-group'>
+				<label htmlFor='dashboard-customer'>Customer</label>
+				<select
+					id='dashboard-customer'
+					className='dashboard-filter-control'
+					value={selectedCustomer}
+					onChange={(e) => onCustomerChange(e.target.value)}>
+					<option value=''>All Customers</option>
+					{customerOptions.map((customerOption) => (
+						<option key={customerOption} value={customerOption}>
+							{customerOption}
+						</option>
+					))}
+				</select>
+			</div>
+
+			<div className='dashboard-filter-actions'>
+				<button
+					type='button'
+					className='dashboard-secondary-button'
+					onClick={onRefresh}>
+					Reset Filters
+				</button>
+			</div>
+		</section>
 	)
 }
 
