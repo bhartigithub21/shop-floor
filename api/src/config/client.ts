@@ -8,7 +8,7 @@ const cnf = {
   username: process.env.NTML_USERNAME || "",
   password: process.env.NTML_PASSWORD || "",
   domain: process.env.NTML_DOMAIN || "",
-  workstation: "VM-S1",
+  //workstation: "VM-S1",
 };
 
 // Explicitly use an Agent with keepAlive enabled.
@@ -24,7 +24,12 @@ export const getCompanies = async () => {
     const url =
       "http://172.16.8.211:7258/EIPPL/api/bapiya/demo/v1.0/companies(a1f36400-efd6-ef11-8292-00155d010600)/psls?$top=5";
 
-    const response = await client.get(url);
+    const response = await client.get(url, {
+      headers: {
+        Connection: "keep-alive",
+        "User-Agent": "Mozilla/5.0", // mimic browser
+      },
+    });
 
     console.log("Data received:", response.data);
     return response.data;
