@@ -4,6 +4,8 @@ import { getCompanies } from "./config/client";
 import callAPI from "./config/basicAuth";
 dotenv.config();
 import authRoter from "./routes/auth";
+import dummyRouter from "./routes/dummy";
+import pslRouter from "./routes/psl";
 import cors from "cors";
 
 const app = express();
@@ -14,7 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req: Request, res: Response) => {
-  res.json({ message: "Hello from Express + TypeScript 🚀" });
+  res.json({ message: "Server running" });
 });
 
 app.get("/companies", async (req: Request, res: Response) => {
@@ -35,7 +37,8 @@ app.get("/test", (req: Request, res: Response) => {
 });
 
 app.use("/api/auth", authRoter);
-
+app.use("/api/dummy", dummyRouter);
+app.use("/api/psl", pslRouter);
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
