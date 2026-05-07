@@ -3,72 +3,24 @@ import { exec } from "child_process";
 export const postData = (data: {
   no: string;
   docNo: string;
-  lineNo: number;
+  lineNo: string;
   userName: string;
   startDate: string;
   endDate: string;
   startTime: string;
   endTime: string;
   scrapCode: string;
-  scrapQnt: number;
+  scrapQnt: string;
   downDate: string;
   downstartTime: string;
   downEndTime: string;
   downReason: string;
-  setupTime: number;
-  output: number;
+  setupTime: string;
+  output: string;
   user: string;
 }): Promise<string> => {
-  const {
-    no,
-    docNo,
-    lineNo,
-    userName,
-    startDate,
-    endDate,
-    startTime,
-    endTime,
-    scrapCode,
-    scrapQnt,
-    downDate,
-    downstartTime,
-    downEndTime,
-    downReason,
-    setupTime,
-    output,
-    user,
-  } = data;
-
   return new Promise<string>((resolve, reject) => {
-    const cmd = `powershell -NoProfile -Command "
-    $body = @{
-      No = '${no}';
-      DocNo = '${docNo}';
-      lineNo = ${lineNo};
-      userName = '${userName}';
-      startDate = '${startDate}';
-      endDate = '${endDate}';
-      startTime = '${startTime}';
-      endTime = '${endTime}';
-      scrapCode = '${scrapCode}';
-      scrapQnt = ${scrapQnt};
-      downDate = '${downDate}';
-      downstartTime = '${downstartTime}';
-      downEndTime = '${downEndTime}';
-      downReason = '${downReason}';
-      setupTime = ${setupTime};
-      Output = ${output};
-      User = '${user}'
-    } | ConvertTo-Json -Depth 10;
-
-    Invoke-RestMethod 
-      -Uri 'http://172.16.8.211:7258/EIPPL/api/bapiya/demo/v1.0/companies(a1f36400-efd6-ef11-8292-00155d010600)/tests' 
-      -Method Post 
-      -Body $body 
-      -ContentType 'application/json' 
-      -UseDefaultCredentials
-    | ConvertTo-Json -Depth 10
-    "`;
+    const cmd = `powershell -NoProfile -Command "(Invoke-WebRequest -Uri 'http://172.16.8.211:7258/EIPPL/api/bapiya/demo/v1.0/companies(a1f36400-efd6-ef11-8292-00155d010600)/tests' -Method Post -Body '{\\"No\\":\\"${data.no}\\",\\"DocNo\\":\\"${data.docNo}\\",\\"lineNo\\":\\"${data.lineNo}\\",\\"userName\\":\\"${data.userName}\\",\\"startDate\\":\\"${data.startDate}\\",\\"endDate\\":\\"${data.endDate}\\",\\"startTime\\":\\"${data.startTime}\\",\\"endTime\\":\\"${data.endTime}\\",\\"scrapCode\\":\\"${data.scrapCode}\\",\\"scrapQnt\\":${data.scrapQnt},\\"downDate\\":\\"${data.downDate}\\",\\"downstartTime\\":\\"${data.downstartTime}\\",\\"downEndTime\\":\\"${data.downEndTime}\\",\\"downReason\\":\\"${data.downReason}\\",\\"setupTime\\":${data.setupTime},\\"Output\\":${data.output},\\"User\\":\\"${data.user}\\"}' -ContentType 'application/json' -UseDefaultCredentials -UseBasicParsing).Content"`;
 
     exec(cmd, { maxBuffer: 10 * 1024 * 1024 }, (err, stdout, stderr) => {
       if (err) {
@@ -78,7 +30,7 @@ export const postData = (data: {
       }
 
       if (!stdout) {
-        return reject("Empty stdout");
+        return reject("Empty stdout test");
       }
 
       resolve(stdout.trim());
