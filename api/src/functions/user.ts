@@ -13,7 +13,7 @@ const login = async (req: Request, res: Response) => {
       process.env.JWT_SECRET as string,
       { expiresIn: "8h" },
     );
-    res.json({ success: true, token });
+    res.json({ success: true, token, user: { ...user, password: "" } });
   } else {
     res.status(401).json({ success: false, message: "Invalid credentials" });
   }
@@ -36,4 +36,18 @@ const getUsers = async (req: Request, res: Response) => {
   res.json(users);
 };
 
-export { login, signup, getUsers };
+const loginToken = (req: Request, res: Response) => {
+  const user = users.find((u) => u.id === req.user?.id);
+  if (user) {
+    const token = jwt.sign(
+      { id: user.id, name: user.name },
+      process.env.JWT_SECRET as string,
+      { expiresIn: "8h" },
+    );
+    res.json({ success: true, token, user: { ...user, password: "" } });
+  } else {
+    res.status(401).json({ success: false, message: "Invalid credentials" });
+  }
+};
+
+export { login, signup, getUsers, loginToken };

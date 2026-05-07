@@ -4,4 +4,5 @@ export type User = {
   password: string;
   phone?: string;
   token?: string;
+  mechine_access?: string[];
 };
