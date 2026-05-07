@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useMemo, useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import jobs from "../mock/jobs.json"
 import HeaderFilters from "../Components/HeaderFilters"
@@ -7,16 +7,82 @@ import JobDetails from "../Components/JobDetails"
 
 import "./Dashboard.css"
 
+const DATE_FILTER_OPTIONS = {
+	all: { label: "All Dates" },
+	today: { label: "Today", offsetStart: 0, offsetEnd: 0 },
+	yesterday: { label: "Yesterday", offsetStart: -1, offsetEnd: -1 },
+	last2Days: { label: "Last 2 Days", offsetStart: -1, offsetEnd: 0 },
+}
+
+const addDays = (date, days) => {
+	const nextDate = new Date(date)
+	nextDate.setDate(nextDate.getDate() + days)
+	return nextDate
+}
+
+const parseDateInputValue = (value) => {
+	if (!value) {
+		return null
+	}
+
+	const [year, month, day] = value.split("-").map(Number)
+	const parsedDate = new Date(year, month - 1, day)
+
+	if (
+		Number.isNaN(parsedDate.getTime()) ||
+		parsedDate.getFullYear() !== year ||
+		parsedDate.getMonth() !== month - 1 ||
+		parsedDate.getDate() !== day
+	) {
+		return null
+	}
+
+	parsedDate.setHours(0, 0, 0, 0)
+	return parsedDate
+}
+
+const getPresetDateRange = (dateFilter) => {
+	const option = DATE_FILTER_OPTIONS[dateFilter]
+
+	if (
+		!option ||
+		option.offsetStart === undefined ||
+		option.offsetEnd === undefined
+	) {
+		return { startDate: null, endDate: null }
+	}
+
+	const today = new Date()
+	today.setHours(0, 0, 0, 0)
+
+	return {
+		startDate: addDays(today, option.offsetStart),
+		endDate: addDays(today, option.offsetEnd),
+	}
+}
+
 const Dashboard = () => {
 	const navigate = useNavigate()
+	useEffect(() => {
+		const token = localStorage.getItem("token")
+
+		if (!token) {
+			navigate("/")
+		}
+	}, [])
 
 	const [selectedJobId, setSelectedJobId] = useState(
 		jobs[0]?.documentNo ?? null,
 	)
 	const [searchText, setSearchText] = useState("")
 	const [customer, setCustomer] = useState("")
+	const [dateFilter, setDateFilter] = useState("all")
 
 	const normalizedSearchText = searchText.trim().toLowerCase()
+	const activeDateRange = useMemo(
+		() => getPresetDateRange(dateFilter),
+		[dateFilter],
+	)
 
 	const customerOptions = useMemo(
 		() =>
@@ -35,7 +101,17 @@ const Dashboard = () => {
 
 		const matchesCustomer = !customer || job.CustomerName === customer
 
-		return matchesSearch && matchesCustomer
+		const scheduleDate = parseDateInputValue(job.ScheduleDate)
+		const matchesDateStart =
+			!activeDateRange.startDate ||
+			(scheduleDate && scheduleDate >= activeDateRange.startDate)
+		const matchesDateEnd =
+			!activeDateRange.endDate ||
+			(scheduleDate && scheduleDate <= activeDateRange.endDate)
+
+		return (
+			matchesSearch && matchesCustomer && matchesDateStart && matchesDateEnd
+		)
 	})
 
 	const selectedJob =
@@ -57,10 +133,12 @@ const Dashboard = () => {
 	const handleResetFilters = () => {
 		setSearchText("")
 		setCustomer("")
+		setDateFilter("all")
 	}
 
 	const handleLogout = () => {
 		localStorage.removeItem("token")
+		localStorage.removeItem("isLogin")
 		navigate("/")
 	}
 
@@ -148,6 +226,8 @@ const Dashboard = () => {
 						selectedCustomer={customer}
 						onCustomerChange={setCustomer}
 						customerOptions={customerOptions}
+						dateFilter={dateFilter}
+						onDateFilterChange={setDateFilter}
 						onRefresh={handleResetFilters}
 					/>
 				</div>

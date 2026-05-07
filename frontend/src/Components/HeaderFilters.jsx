@@ -5,6 +5,8 @@ function HeaderFilters({
 	selectedCustomer,
 	onCustomerChange,
 	customerOptions,
+	dateFilter,
+	onDateFilterChange,
 }) {
 	return (
 		<section className='dashboard-filters'>
@@ -33,6 +35,20 @@ function HeaderFilters({
 							{customerOption}
 						</option>
 					))}
+				</select>
+			</div>
+
+			<div className='dashboard-filter-group'>
+				<label htmlFor='dashboard-date-filter'>Date Filter</label>
+				<select
+					id='dashboard-date-filter'
+					className='dashboard-filter-control'
+					value={dateFilter}
+					onChange={(e) => onDateFilterChange(e.target.value)}>
+					<option value='all'>All Dates</option>
+					<option value='today'>Today</option>
+					<option value='yesterday'>Yesterday</option>
+					<option value='last2Days'>Last 2 Days</option>
 				</select>
 			</div>
 

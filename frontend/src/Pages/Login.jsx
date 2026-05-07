@@ -1,12 +1,19 @@
 // src/pages/Login.jsx
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { postReq } from "../config/request"
 import "./Login.css"
 
 function Login() {
 	const navigate = useNavigate()
+
+	useEffect(() => {
+		const token = localStorage.getItem("token")
+		if (token) {
+			navigate("/dashboard")
+		}
+	}, [navigate])
 
 	const [formData, setFormData] = useState({
 		username: "",
@@ -26,7 +33,8 @@ function Login() {
 		console.log(res)
 
 		if (res.success) {
-			//localStorage.setItem("token", res.token);
+			localStorage.setItem("token", res.token)
+			localStorage.setItem("isLogin", "true")
 			navigate("/dashboard")
 		} else {
 			alert("Login failed: " + res.message)
