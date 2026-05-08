@@ -115,9 +115,9 @@ const Signup = () => {
 					</button>
 				</form>
 
-				<p className='signup-footer'>
+				{/* <p className='signup-footer'>
 					Already have an account? <Link to='/'>Login</Link>
-				</p>
+				</p> */}
 			</div>
 		</section>
 	)

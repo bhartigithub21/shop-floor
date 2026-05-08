@@ -5,7 +5,7 @@ import Dashboard from "./Pages/Dashboard"
 import OutputJournalPage from "./Pages/OutputJournalPage"
 
 function App() {
-	console.log("Dfdfdf", "sdsd")
+	// console.log("Dfdfdf", "sdsd")
 	return (
 		<Router>
 			<Routes>
