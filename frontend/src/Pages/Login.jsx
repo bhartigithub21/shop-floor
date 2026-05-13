@@ -53,11 +53,7 @@ function Login() {
 		<section className='login-page'>
 			<div className='login-card'>
 				<div className='login-copy'>
-					{/* <p className='login-kicker'>Shop Floor Portal</p> */}
 					<h1>Operator Login</h1>
-					{/* <p className='login-subtitle'>
-						Sign in to view jobs, manage tasks, and track shop floor updates.
-					</p> */}
 				</div>
 
 				<form className='login-form' onSubmit={handleSubmit}>

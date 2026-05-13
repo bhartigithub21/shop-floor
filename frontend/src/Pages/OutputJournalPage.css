@@ -108,7 +108,11 @@
 
 .output-journal-summary-hero {
 	background:
-		radial-gradient(circle at top right, rgba(37, 99, 235, 0.16), transparent 28%),
+		radial-gradient(
+			circle at top right,
+			rgba(37, 99, 235, 0.16),
+			transparent 28%
+		),
 		linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
 	color: #fff;
 }
@@ -216,7 +220,7 @@
 
 .output-journal-field input:hover,
 .output-journal-field select:hover {
-	border-color: rgba(148, 163, 184, 0.45);
+	border-color: rgba(76, 80, 87, 0.45);
 }
 
 .output-journal-field input:focus,
