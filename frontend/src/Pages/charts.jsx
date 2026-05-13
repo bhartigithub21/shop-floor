@@ -33,6 +33,7 @@ export default function Charts() {
   const fetchChartData = async () => {
     try {
       const response = await getReq("api/dummy/chart", "");
+
       const groupedByDate = response.reduce((acc, item) => {
         const key = item.endDate;
 
@@ -118,17 +119,17 @@ export default function Charts() {
           </div>
 
           <div className="chart-box line-chart-box">
-            <ResponsiveContainer width="100%" height={700}>
+            <ResponsiveContainer width="100%" height="100%">
               <LineChart data={lineData}>
                 <CartesianGrid strokeDasharray="3 3" />
 
-                <XAxis dataKey="endDate" />
+                <XAxis dataKey="endDate" tick={{ fontSize: 11 }} />
 
-                <YAxis />
+                <YAxis tick={{ fontSize: 11 }} />
 
-                <Tooltip />
+                <Tooltip contentStyle={{ fontSize: "12px" }} />
 
-                <Legend />
+                <Legend wrapperStyle={{ fontSize: "12px" }} />
 
                 <Line
                   type="monotone"
@@ -145,40 +146,44 @@ export default function Charts() {
         </div>
 
         <div className="right-section">
-          <div className="chart-header">Scrap Quantity By Scrap Code</div>
+          {/* <div className="chart-header">
+            Scrap Quantity By Scrap Code
+          </div> */}
 
           <div className="chart-box small-chart-box">
-            <ResponsiveContainer width="100%" height={320}>
+            <ResponsiveContainer width="100%" height="100%">
               <BarChart data={scrapData}>
                 <CartesianGrid strokeDasharray="3 3" />
 
-                <XAxis dataKey="scrapCode" />
+                <XAxis dataKey="scrapCode" tick={{ fontSize: 10 }} />
 
-                <YAxis />
+                <YAxis tick={{ fontSize: 10 }} />
 
-                <Tooltip />
+                <Tooltip contentStyle={{ fontSize: "12px" }} />
 
-                <Legend />
+                <Legend wrapperStyle={{ fontSize: "12px" }} />
 
                 <Bar dataKey="scrapQnt" name="Scrap Quantity" fill="#ff7300" />
               </BarChart>
             </ResponsiveContainer>
           </div>
 
-          <div className="chart-header">Output Quantity By Job No</div>
+          {/* <div className="chart-header">
+            Output Quantity By Job No
+          </div> */}
 
           <div className="chart-box small-chart-box">
-            <ResponsiveContainer width="100%" height={320}>
+            <ResponsiveContainer width="100%" height="100%">
               <BarChart data={outputData}>
                 <CartesianGrid strokeDasharray="3 3" />
 
-                <XAxis dataKey="No" />
+                <XAxis dataKey="No" tick={{ fontSize: 10 }} />
 
-                <YAxis />
+                <YAxis tick={{ fontSize: 10 }} />
 
-                <Tooltip />
+                <Tooltip contentStyle={{ fontSize: "12px" }} />
 
-                <Legend />
+                <Legend wrapperStyle={{ fontSize: "12px" }} />
 
                 <Bar dataKey="output" name="Output Quantity" fill="#82ca9d" />
               </BarChart>

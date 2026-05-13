@@ -38,11 +38,13 @@
 }
 
 .line-chart-box {
-  height: 760px;
+  height: 420px;
+  padding: 10px;
 }
 
 .small-chart-box {
-  height: 360px;
+  height: 260px;
+  padding: 10px;
 }
 
 @media screen and (max-width: 1000px) {
