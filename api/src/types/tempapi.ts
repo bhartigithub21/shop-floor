@@ -1,5 +1,6 @@
 export type TempApiData = {
   no: string;
+  RPONo: string;
   docNo: string;
   lineNo: string;
   userName: string;

@@ -8,13 +8,17 @@ import {
   Tooltip,
   ResponsiveContainer,
   Legend,
+  BarChart,
+  Bar,
 } from "recharts";
 
 import "./Charts.css";
+import { getReq } from "../config/request";
 
 export default function Charts() {
-  const [data, setData] = useState([]);
   const [lineData, setLineData] = useState([]);
+  const [scrapData, setScrapData] = useState([]);
+  const [outputData, setOutputData] = useState([]);
 
   useEffect(() => {
     fetchChartData();
@@ -22,24 +26,9 @@ export default function Charts() {
 
   const fetchChartData = async () => {
     try {
-      // 🔁 Replace with API
-      const response = [
-        { endDate: "2026-05-01", output: "120" },
-        { endDate: "2026-05-01", output: "20" },
-        { endDate: "2026-05-02", output: "200" },
-        { endDate: "2026-05-03", output: "120" },
-        { endDate: "2026-05-03", output: "50" },
-        { endDate: "2026-05-04", output: "300" },
-      ];
+      const response = await getReq("api/dummy/chart", "");
 
-      const formatted = response.map((item) => ({
-        ...item,
-        output: Number(item.output || 0),
-      }));
-
-      setData(formatted);
-
-      const grouped = formatted.reduce((acc, item) => {
+      const groupedByDate = response.reduce((acc, item) => {
         const key = item.endDate;
 
         if (!acc[key]) {
@@ -49,16 +38,63 @@ export default function Charts() {
           };
         }
 
-        acc[key].output += item.output;
+        acc[key].output += Number(item.output || 0);
 
         return acc;
       }, {});
 
-      const finalLineData = Object.values(grouped).sort(
-        (a, b) => new Date(a.endDate) - new Date(b.endDate),
-      );
+      const last7Days = [];
+
+      for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+
+        date.setDate(date.getDate() - i);
+
+        const formattedDate = date.toISOString().split("T")[0];
+
+        last7Days.push(formattedDate);
+      }
+
+      const finalLineData = last7Days.map((date) => ({
+        endDate: date,
+        output: groupedByDate[date]?.output || 0,
+      }));
 
       setLineData(finalLineData);
+
+      const groupedScrap = response.reduce((acc, item) => {
+        const key = item.scrapCode || "No Scrap";
+
+        if (!acc[key]) {
+          acc[key] = {
+            scrapCode: key,
+            scrapQnt: 0,
+          };
+        }
+
+        acc[key].scrapQnt += Number(item.scrapQnt || 0);
+
+        return acc;
+      }, {});
+
+      setScrapData(Object.values(groupedScrap));
+
+      const groupedOutput = response.reduce((acc, item) => {
+        const key = item.No || "Unknown";
+
+        if (!acc[key]) {
+          acc[key] = {
+            No: key,
+            output: 0,
+          };
+        }
+
+        acc[key].output += Number(item.output || 0);
+
+        return acc;
+      }, {});
+
+      setOutputData(Object.values(groupedOutput));
     } catch (err) {
       console.error(err);
     }
@@ -66,14 +102,37 @@ export default function Charts() {
 
   return (
     <div className="chart-page">
-      <div className="chart-header">Output Quantity Chart</div>
+      <div className="chart-header">Output Quantity Chart (Last 7 Days)</div>
 
       <div className="chart-box">
         <ResponsiveContainer width="100%" height={400}>
           <LineChart data={lineData}>
             <CartesianGrid strokeDasharray="3 3" />
-
             <XAxis dataKey="endDate" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Line
+              type="monotone"
+              dataKey="output"
+              name="Total Output"
+              stroke="#8884d8"
+              strokeWidth={3}
+              dot={{ r: 4 }}
+              activeDot={{ r: 6 }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div className="chart-header">Scrap Quantity By Scrap Code</div>
+
+      <div className="chart-box">
+        <ResponsiveContainer width="100%" height={400}>
+          <BarChart data={scrapData}>
+            <CartesianGrid strokeDasharray="3 3" />
+
+            <XAxis dataKey="scrapCode" />
 
             <YAxis />
 
@@ -81,15 +140,24 @@ export default function Charts() {
 
             <Legend />
 
-            <Line
-              type="monotone"
-              dataKey="output"
-              name="Total Output"
-              strokeWidth={3}
-              dot={{ r: 4 }}
-              activeDot={{ r: 6 }}
-            />
-          </LineChart>
+            <Bar dataKey="scrapQnt" name="Scrap Quantity" fill="#ff7300" />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div className="chart-header">Output Quantity By Job No</div>
+
+      <div className="chart-box">
+        <ResponsiveContainer width="100%" height={400}>
+          <BarChart data={outputData}>
+            <CartesianGrid strokeDasharray="3 3" />
+
+            <XAxis dataKey="No" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="output" name="Output Quantity" fill="#82ca9d" />
+          </BarChart>
         </ResponsiveContainer>
       </div>
     </div>
