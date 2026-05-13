@@ -22,12 +22,17 @@ export default function Charts() {
 
   useEffect(() => {
     fetchChartData();
+
+    const interval = setInterval(() => {
+      fetchChartData();
+    }, 3000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const fetchChartData = async () => {
     try {
       const response = await getReq("api/dummy/chart", "");
-
       const groupedByDate = response.reduce((acc, item) => {
         const key = item.endDate;
 
@@ -38,7 +43,7 @@ export default function Charts() {
           };
         }
 
-        acc[key].output += Number(item.output || 0);
+        acc[key].output += Number(item.Output || 0);
 
         return acc;
       }, {});
@@ -89,7 +94,7 @@ export default function Charts() {
           };
         }
 
-        acc[key].output += Number(item.output || 0);
+        acc[key].output += Number(item.Output || 0);
 
         return acc;
       }, {});
@@ -102,63 +107,84 @@ export default function Charts() {
 
   return (
     <div className="chart-page">
-      <div className="chart-header">Output Quantity Chart (Last 7 Days)</div>
-
-      <div className="chart-box">
-        <ResponsiveContainer width="100%" height={400}>
-          <LineChart data={lineData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="endDate" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line
-              type="monotone"
-              dataKey="output"
-              name="Total Output"
-              stroke="#8884d8"
-              strokeWidth={3}
-              dot={{ r: 4 }}
-              activeDot={{ r: 6 }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
+      <div className="chart-top-bar">
+        <div className="chart-main-title">Production Dashboard</div>
       </div>
 
-      <div className="chart-header">Scrap Quantity By Scrap Code</div>
+      <div className="dashboard-grid">
+        <div className="left-section">
+          <div className="chart-header">
+            Output Quantity Chart (Last 7 Days)
+          </div>
 
-      <div className="chart-box">
-        <ResponsiveContainer width="100%" height={400}>
-          <BarChart data={scrapData}>
-            <CartesianGrid strokeDasharray="3 3" />
+          <div className="chart-box line-chart-box">
+            <ResponsiveContainer width="100%" height={700}>
+              <LineChart data={lineData}>
+                <CartesianGrid strokeDasharray="3 3" />
 
-            <XAxis dataKey="scrapCode" />
+                <XAxis dataKey="endDate" />
 
-            <YAxis />
+                <YAxis />
 
-            <Tooltip />
+                <Tooltip />
 
-            <Legend />
+                <Legend />
 
-            <Bar dataKey="scrapQnt" name="Scrap Quantity" fill="#ff7300" />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+                <Line
+                  type="monotone"
+                  dataKey="output"
+                  name="Total Output"
+                  stroke="#8884d8"
+                  strokeWidth={3}
+                  dot={{ r: 4 }}
+                  activeDot={{ r: 6 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
 
-      <div className="chart-header">Output Quantity By Job No</div>
+        <div className="right-section">
+          <div className="chart-header">Scrap Quantity By Scrap Code</div>
 
-      <div className="chart-box">
-        <ResponsiveContainer width="100%" height={400}>
-          <BarChart data={outputData}>
-            <CartesianGrid strokeDasharray="3 3" />
+          <div className="chart-box small-chart-box">
+            <ResponsiveContainer width="100%" height={320}>
+              <BarChart data={scrapData}>
+                <CartesianGrid strokeDasharray="3 3" />
 
-            <XAxis dataKey="No" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="output" name="Output Quantity" fill="#82ca9d" />
-          </BarChart>
-        </ResponsiveContainer>
+                <XAxis dataKey="scrapCode" />
+
+                <YAxis />
+
+                <Tooltip />
+
+                <Legend />
+
+                <Bar dataKey="scrapQnt" name="Scrap Quantity" fill="#ff7300" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="chart-header">Output Quantity By Job No</div>
+
+          <div className="chart-box small-chart-box">
+            <ResponsiveContainer width="100%" height={320}>
+              <BarChart data={outputData}>
+                <CartesianGrid strokeDasharray="3 3" />
+
+                <XAxis dataKey="No" />
+
+                <YAxis />
+
+                <Tooltip />
+
+                <Legend />
+
+                <Bar dataKey="output" name="Output Quantity" fill="#82ca9d" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
       </div>
     </div>
   );
