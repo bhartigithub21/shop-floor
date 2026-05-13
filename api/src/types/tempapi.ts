@@ -1,0 +1,19 @@
+export type TempApiData = {
+  no: string;
+  docNo: string;
+  lineNo: string;
+  userName: string;
+  startDate: string;
+  endDate: string;
+  startTime: string;
+  endTime: string;
+  scrapCode: string;
+  scrapQnt: string;
+  downDate: string;
+  downstartTime: string;
+  downEndTime: string;
+  downReason: string;
+  setupTime: string;
+  output: string;
+  user: string;
+};

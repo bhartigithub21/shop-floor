@@ -1,0 +1,20 @@
+.chart-page {
+  padding: 24px;
+  background: #f4f6f8;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+.chart-header {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #222;
+}
+
+.chart-box {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
