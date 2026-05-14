@@ -13,7 +13,7 @@ const getPsl = async (req: Request, res: Response) => {
 const getScrap = async (req: Request, res: Response) => {
   try {
     const scrapData: string = await getScrapData();
-    res.status(200).json(JSON.parse(scrapData));
+    res.status(200).json(JSON.parse(scrapData).value);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch scrap data" });
   }
