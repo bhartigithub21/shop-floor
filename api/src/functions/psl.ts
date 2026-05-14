@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getData } from "../config/powershell/getpsl";
+import { getData, getScrapData } from "../config/powershell/getpsl";
 
 const getPsl = async (req: Request, res: Response) => {
   try {
@@ -10,4 +10,13 @@ const getPsl = async (req: Request, res: Response) => {
   }
 };
 
-export { getPsl };
+const getScrap = async (req: Request, res: Response) => {
+  try {
+    const scrapData: string = await getScrapData();
+    res.status(200).json(JSON.parse(scrapData));
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch scrap data" });
+  }
+};
+
+export { getPsl, getScrap };
