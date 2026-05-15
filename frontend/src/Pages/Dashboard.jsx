@@ -7,7 +7,7 @@ import JobDetails from "../Components/JobDetails"
 
 import "./Dashboard.css"
 import { AppContext } from "../config/AppContext"
-//import { getReq } from "../config/request"
+// import { getReq } from "../config/request"
 
 const DATE_FILTER_OPTIONS = {
 	all: { label: "All Dates" },
@@ -69,7 +69,7 @@ const Dashboard = () => {
 	const [searchText, setSearchText] = useState("")
 	const [customer, setCustomer] = useState("")
 	const [dateFilter, setDateFilter] = useState("all")
-	//const [jobs, setJobs] = useState([])
+	// const [jobs, setJobs] = useState([])
 
 	useEffect(() => {
 		if (!user) {

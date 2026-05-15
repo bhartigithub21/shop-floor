@@ -1,196 +1,196 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react"
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
-  BarChart,
-  Bar,
-} from "recharts";
+	LineChart,
+	Line,
+	XAxis,
+	YAxis,
+	CartesianGrid,
+	Tooltip,
+	ResponsiveContainer,
+	Legend,
+	BarChart,
+	Bar,
+} from "recharts"
 
-import "./Charts.css";
-import { getReq } from "../config/request";
+import "./Charts.css"
+import { getReq } from "../config/request"
 
 export default function Charts() {
-  const [lineData, setLineData] = useState([]);
-  const [scrapData, setScrapData] = useState([]);
-  const [outputData, setOutputData] = useState([]);
+	const [lineData, setLineData] = useState([])
+	const [scrapData, setScrapData] = useState([])
+	const [outputData, setOutputData] = useState([])
 
-  useEffect(() => {
-    fetchChartData();
+	const fetchChartData = async () => {
+		try {
+			const response = await getReq("api/dummy/chart", "")
 
-    const interval = setInterval(() => {
-      fetchChartData();
-    }, 3000);
+			const groupedByDate = response.reduce((acc, item) => {
+				const key = item.endDate
 
-    return () => clearInterval(interval);
-  }, []);
+				if (!acc[key]) {
+					acc[key] = {
+						endDate: key,
+						output: 0,
+					}
+				}
 
-  const fetchChartData = async () => {
-    try {
-      const response = await getReq("api/dummy/chart", "");
+				acc[key].output += Number(item.Output || 0)
 
-      const groupedByDate = response.reduce((acc, item) => {
-        const key = item.endDate;
+				return acc
+			}, {})
 
-        if (!acc[key]) {
-          acc[key] = {
-            endDate: key,
-            output: 0,
-          };
-        }
+			const last7Days = []
 
-        acc[key].output += Number(item.Output || 0);
+			for (let i = 6; i >= 0; i--) {
+				const date = new Date()
 
-        return acc;
-      }, {});
+				date.setDate(date.getDate() - i)
 
-      const last7Days = [];
+				const formattedDate = date.toISOString().split("T")[0]
 
-      for (let i = 6; i >= 0; i--) {
-        const date = new Date();
+				last7Days.push(formattedDate)
+			}
 
-        date.setDate(date.getDate() - i);
+			const finalLineData = last7Days.map((date) => ({
+				endDate: date,
+				output: groupedByDate[date]?.output || 0,
+			}))
 
-        const formattedDate = date.toISOString().split("T")[0];
+			setLineData(finalLineData)
 
-        last7Days.push(formattedDate);
-      }
+			const groupedScrap = response.reduce((acc, item) => {
+				const key = item.scrapCode || "No Scrap"
 
-      const finalLineData = last7Days.map((date) => ({
-        endDate: date,
-        output: groupedByDate[date]?.output || 0,
-      }));
+				if (!acc[key]) {
+					acc[key] = {
+						scrapCode: key,
+						scrapQnt: 0,
+					}
+				}
 
-      setLineData(finalLineData);
+				acc[key].scrapQnt += Number(item.scrapQnt || 0)
 
-      const groupedScrap = response.reduce((acc, item) => {
-        const key = item.scrapCode || "No Scrap";
+				return acc
+			}, {})
 
-        if (!acc[key]) {
-          acc[key] = {
-            scrapCode: key,
-            scrapQnt: 0,
-          };
-        }
+			setScrapData(Object.values(groupedScrap))
 
-        acc[key].scrapQnt += Number(item.scrapQnt || 0);
+			const groupedOutput = response.reduce((acc, item) => {
+				const key = item.No || "Unknown"
 
-        return acc;
-      }, {});
+				if (!acc[key]) {
+					acc[key] = {
+						No: key,
+						output: 0,
+					}
+				}
 
-      setScrapData(Object.values(groupedScrap));
+				acc[key].output += Number(item.Output || 0)
 
-      const groupedOutput = response.reduce((acc, item) => {
-        const key = item.No || "Unknown";
+				return acc
+			}, {})
 
-        if (!acc[key]) {
-          acc[key] = {
-            No: key,
-            output: 0,
-          };
-        }
+			setOutputData(Object.values(groupedOutput))
+		} catch (err) {
+			console.error(err)
+		}
+	}
 
-        acc[key].output += Number(item.Output || 0);
+	useEffect(() => {
+		fetchChartData()
 
-        return acc;
-      }, {});
+		const interval = setInterval(() => {
+			fetchChartData()
+		}, 3000)
 
-      setOutputData(Object.values(groupedOutput));
-    } catch (err) {
-      console.error(err);
-    }
-  };
+		return () => clearInterval(interval)
+	}, [])
 
-  return (
-    <div className="chart-page">
-      <div className="chart-top-bar">
-        <div className="chart-main-title">Production Dashboard</div>
-      </div>
+	return (
+		<div className='chart-page'>
+			<div className='chart-top-bar'>
+				<div className='chart-main-title'>Production Dashboard</div>
+			</div>
 
-      <div className="dashboard-grid">
-        <div className="left-section">
-          <div className="chart-header">
-            Output Quantity Chart (Last 7 Days)
-          </div>
+			<div className='dashboard-grid'>
+				<div className='left-section'>
+					<div className='chart-header'>
+						Output Quantity Chart (Last 7 Days)
+					</div>
 
-          <div className="chart-box line-chart-box">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={lineData}>
-                <CartesianGrid strokeDasharray="3 3" />
+					<div className='chart-box line-chart-box'>
+						<ResponsiveContainer width='100%' height='100%'>
+							<LineChart data={lineData}>
+								<CartesianGrid strokeDasharray='3 3' />
 
-                <XAxis dataKey="endDate" tick={{ fontSize: 11 }} />
+								<XAxis dataKey='endDate' tick={{ fontSize: 11 }} />
 
-                <YAxis tick={{ fontSize: 11 }} />
+								<YAxis tick={{ fontSize: 11 }} />
 
-                <Tooltip contentStyle={{ fontSize: "12px" }} />
+								<Tooltip contentStyle={{ fontSize: "12px" }} />
 
-                <Legend wrapperStyle={{ fontSize: "12px" }} />
+								<Legend wrapperStyle={{ fontSize: "12px" }} />
 
-                <Line
-                  type="monotone"
-                  dataKey="output"
-                  name="Total Output"
-                  stroke="#8884d8"
-                  strokeWidth={3}
-                  dot={{ r: 4 }}
-                  activeDot={{ r: 6 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
+								<Line
+									type='monotone'
+									dataKey='output'
+									name='Total Output'
+									stroke='#8884d8'
+									strokeWidth={3}
+									dot={{ r: 4 }}
+									activeDot={{ r: 6 }}
+								/>
+							</LineChart>
+						</ResponsiveContainer>
+					</div>
+				</div>
 
-        <div className="right-section">
-          {/* <div className="chart-header">
+				<div className='right-section'>
+					{/* <div className="chart-header">
             Scrap Quantity By Scrap Code
           </div> */}
 
-          <div className="chart-box small-chart-box">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={scrapData}>
-                <CartesianGrid strokeDasharray="3 3" />
+					<div className='chart-box small-chart-box'>
+						<ResponsiveContainer width='100%' height='100%'>
+							<BarChart data={scrapData}>
+								<CartesianGrid strokeDasharray='3 3' />
 
-                <XAxis dataKey="scrapCode" tick={{ fontSize: 10 }} />
+								<XAxis dataKey='scrapCode' tick={{ fontSize: 10 }} />
 
-                <YAxis tick={{ fontSize: 10 }} />
+								<YAxis tick={{ fontSize: 10 }} />
 
-                <Tooltip contentStyle={{ fontSize: "12px" }} />
+								<Tooltip contentStyle={{ fontSize: "12px" }} />
 
-                <Legend wrapperStyle={{ fontSize: "12px" }} />
+								<Legend wrapperStyle={{ fontSize: "12px" }} />
 
-                <Bar dataKey="scrapQnt" name="Scrap Quantity" fill="#ff7300" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+								<Bar dataKey='scrapQnt' name='Scrap Quantity' fill='#ff7300' />
+							</BarChart>
+						</ResponsiveContainer>
+					</div>
 
-          {/* <div className="chart-header">
+					{/* <div className="chart-header">
             Output Quantity By Job No
           </div> */}
 
-          <div className="chart-box small-chart-box">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={outputData}>
-                <CartesianGrid strokeDasharray="3 3" />
+					<div className='chart-box small-chart-box'>
+						<ResponsiveContainer width='100%' height='100%'>
+							<BarChart data={outputData}>
+								<CartesianGrid strokeDasharray='3 3' />
 
-                <XAxis dataKey="No" tick={{ fontSize: 10 }} />
+								<XAxis dataKey='No' tick={{ fontSize: 10 }} />
 
-                <YAxis tick={{ fontSize: 10 }} />
+								<YAxis tick={{ fontSize: 10 }} />
 
-                <Tooltip contentStyle={{ fontSize: "12px" }} />
+								<Tooltip contentStyle={{ fontSize: "12px" }} />
 
-                <Legend wrapperStyle={{ fontSize: "12px" }} />
+								<Legend wrapperStyle={{ fontSize: "12px" }} />
 
-                <Bar dataKey="output" name="Output Quantity" fill="#82ca9d" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+								<Bar dataKey='output' name='Output Quantity' fill='#82ca9d' />
+							</BarChart>
+						</ResponsiveContainer>
+					</div>
+				</div>
+			</div>
+		</div>
+	)
 }
