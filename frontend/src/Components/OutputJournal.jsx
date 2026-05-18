@@ -6,8 +6,8 @@ function OutputJournal({ job }) {
   const { user } = useContext(AppContext);
   const [form, setForm] = useState({
     No: job.No,
-    docNo: "",
-    lineNo: "",
+    docNo: job.documentNo,
+    lineNo: job.lineNo,
     RPONo: job.ProdOrderNo,
     userName: user.name,
     startDate: "",
